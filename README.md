@@ -1,4 +1,4 @@
-# webapp-tutorial-scaffold
+# webapp-tutorial-using-ethers
 
 Using: 
 
