@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import {Button, Input , NumberInput,  NumberInputField,  FormControl,  FormLabel } from '@chakra-ui/react'
 import {ethers} from 'ethers'
 import {parseEther } from 'ethers/lib/utils'
-import {ERC20ABI as abi} from 'abi/erc20abi'
+import {ERC20ABI as abi} from 'abi/ERC20ABI'
 
 interface Props {
     addressContract: string,
