@@ -53,18 +53,16 @@ export default function ReadERC20(props:Props){
     console.log(`listening for Transfer...`)
 
     const fromMe = erc20.filters.Transfer(currentAccount, null)
-    provider.on(fromMe, (from, to, amount, event) => {
+    erc20.on(fromMe, (from, to, amount, event) => {
         console.log('Transfer|sent',  {from, to, amount, event} )
         queryTokenBalance(window)
     })
 
     const toMe = erc20.filters.Transfer(null, currentAccount)
-    provider.on(toMe, (from, to, amount, event) => {
+    erc20.on(toMe, (from, to, amount, event) => {
         console.log('Transfer|received',  {from, to, amount, event} )
         queryTokenBalance(window)
     })
-    //TODO : something wrong with from,to,amount,event
-    //https://docs.ethers.io/v5/api/contract/example/#erc20-meta-events
 
     // remove listener when the component is unmounted
     return () => {
