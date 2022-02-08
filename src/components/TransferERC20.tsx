@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import {Button, Input , NumberInput,  NumberInputField,  FormControl,  FormLabel } from '@chakra-ui/react'
 import {ethers} from 'ethers'
 import {parseEther } from 'ethers/lib/utils'
-import {ERC20ABI as abi} from 'abi/ERC20ABI'
+import {ERC20ABI as abi} from 'abi/erc20abi'
 
 interface Props {
     addressContract: string,
@@ -23,7 +23,7 @@ export default function ReadERC20(props:Props){
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
     const erc20 = new ethers.Contract(addressContract, abi, signer)
-    erc20.transfer(toAddress,parseEther(amount)).catch('error', console.error)  
+    erc20.transfer(toAddress,parseEther(amount)).catch((e:Error)=>console.log(e))  
   }
 
   const handleChange = (value:string) => setAmount(value)

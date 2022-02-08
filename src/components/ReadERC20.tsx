@@ -1,6 +1,6 @@
 import React, {useEffect, useState } from 'react';
 import {Text} from '@chakra-ui/react'
-import {ERC20ABI as abi} from 'abi/ERC20ABI'
+import {ERC20ABI as abi} from 'abi/erc20abi'
 import {ethers} from 'ethers'
 
 interface Props {
@@ -22,13 +22,20 @@ export default function ReadERC20(props:Props){
 
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const erc20 = new ethers.Contract(addressContract, abi, provider);
-    erc20.symbol().then((result:string)=>{
-        setSymbol(result)
-    }).catch('error', console.error)
 
-    erc20.totalSupply().then((result:string)=>{
-        setTotalSupply(ethers.utils.formatEther(result))
-    }).catch('error', console.error);
+    provider.getCode(addressContract).then((result:string)=>{
+      //check whether it is a contract
+      if(result === '0x') return
+    
+      erc20.symbol().then((result:string)=>{
+          setSymbol(result)
+      }).catch((e:Error)=>console.log(e))
+
+      erc20.totalSupply().then((result:string)=>{
+          setTotalSupply(ethers.utils.formatEther(result))
+      }).catch((e:Error)=>console.log(e))
+
+    })
     //called only once
   },[])  
 
@@ -47,15 +54,17 @@ export default function ReadERC20(props:Props){
 
     const fromMe = erc20.filters.Transfer(currentAccount, null)
     provider.on(fromMe, (from, to, amount, event) => {
-        console.log('Transfer|sent', { from, to, amount, event })
+        console.log('Transfer|sent',  {from, to, amount, event} )
         queryTokenBalance(window)
     })
 
     const toMe = erc20.filters.Transfer(null, currentAccount)
     provider.on(toMe, (from, to, amount, event) => {
-        console.log('Transfer|received', { from, to, amount, event })
+        console.log('Transfer|received',  {from, to, amount, event} )
         queryTokenBalance(window)
     })
+    //TODO : something wrong with from,to,amount,event
+    //https://docs.ethers.io/v5/api/contract/example/#erc20-meta-events
 
     // remove listener when the component is unmounted
     return () => {
@@ -71,8 +80,7 @@ export default function ReadERC20(props:Props){
     erc20.balanceOf(currentAccount)
     .then((result:string)=>{
         SetBalance(Number(ethers.utils.formatEther(result)))
-    })
-    .catch('error', console.error)
+    }).catch((e:Error)=>console.log(e))
   }
 
   return (

@@ -10,6 +10,7 @@ import ReadERC20 from "components/ReadERC20"
 import TransferERC20 from "components/TransferERC20"
 
 declare let window:any
+const addressERC20 = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
 
 const Home: NextPage = () => {
   const [balance, setBalance] = useState<string | undefined>()
@@ -18,20 +19,28 @@ const Home: NextPage = () => {
   const [chainname, setChainName] = useState<string | undefined>()
 
   useEffect(() => {
+    //get ETH balance and network info only when having currentAccount 
     if(!currentAccount || !ethers.utils.isAddress(currentAccount)) return
+
     //client side code
-    if(!window.ethereum) return
+    if(!window.ethereum) {
+      console.log("please install MetaMask")
+      return
+    }
+
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     provider.getBalance(currentAccount).then((result)=>{
       setBalance(ethers.utils.formatEther(result))
-    })
+    }).catch((e)=>console.log(e))
+
     provider.getNetwork().then((result)=>{
       setChainId(result.chainId)
       setChainName(result.name)
-    })
+    }).catch((e)=>console.log(e))
 
   },[currentAccount])
 
+  //click connect
   const onClickConnect = () => {
     //client side code
     if(!window.ethereum) {
@@ -40,7 +49,7 @@ const Home: NextPage = () => {
     }
     /*
     //change from window.ethereum.enable() which is deprecated
-    //see docs: https://docs.metamask.io/guide/ethereum-provider.html#legacy-methods
+    //call window.ethereum.request() directly
     window.ethereum.request({ method: 'eth_requestAccounts' })
     .then((accounts:any)=>{
       if(accounts.length>0) setCurrentAccount(accounts[0])
@@ -50,15 +59,14 @@ const Home: NextPage = () => {
 
     //we can do it using ethers.js
     const provider = new ethers.providers.Web3Provider(window.ethereum)
-
-    // MetaMask requires requesting permission to connect users accounts
     provider.send("eth_requestAccounts", [])
     .then((accounts)=>{
       if(accounts.length>0) setCurrentAccount(accounts[0])
-    })
-    .catch((e)=>console.log(e))
+    }).catch((e)=>console.log(e))
+
   }
-  
+
+  //click disconnect
   const onClickDisconnect = () => {
     console.log("onClickDisConnect")
     setBalance(undefined)
@@ -95,7 +103,7 @@ const Home: NextPage = () => {
         <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
           <Heading my={4}  fontSize='xl'>Read ClassToken Info</Heading>
           <ReadERC20 
-            addressContract='0x5FbDB2315678afecb367f032d93F642f64180aa3'
+            addressContract={addressERC20}
             currentAccount={currentAccount}
           />
         </Box>
@@ -103,7 +111,7 @@ const Home: NextPage = () => {
         <Box  mb={0} p={4} w='100%' borderWidth="1px" borderRadius="lg">
           <Heading my={4}  fontSize='xl'>Transfer Classtoken</Heading>
           <TransferERC20 
-            addressContract='0x5FbDB2315678afecb367f032d93F642f64180aa3'
+            addressContract={addressERC20}
             currentAccount={currentAccount}
           />
         </Box>
