@@ -66,8 +66,8 @@ export default function ReadERC20(props:Props){
 
     // remove listener when the component is unmounted
     return () => {
-        provider.removeAllListeners(toMe)
-        provider.removeAllListeners(fromMe)
+        erc20.removeAllListeners(toMe)
+        erc20.removeAllListeners(fromMe)
     }    
   }, [currentAccount])
 
