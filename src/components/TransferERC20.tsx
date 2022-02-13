@@ -28,7 +28,7 @@ export default function ReadERC20(props:Props){
     
     erc20.transfer(toAddress,parseEther(amount))
       .then((tr: TransactionResponse) => {
-        console.log(`TX hash: ${tr.hash}`)
+        console.log(`TransactionResponse TX hash: ${tr.hash}`)
         tr.wait().then((receipt:TransactionReceipt)=>{console.log("transfer receipt",receipt)})
       })
       .catch((e:Error)=>console.log(e))
