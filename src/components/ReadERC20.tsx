@@ -48,7 +48,7 @@ export default function ReadERC20(props:Props){
     queryTokenBalance(window)
 
     const provider = new ethers.providers.Web3Provider(window.ethereum)
-    const erc20 = new ethers.Contract(addressContract, abi, provider)
+    const erc20:Contract = new ethers.Contract(addressContract, abi, provider)
 
     // listen for changes on an Ethereum address
     console.log(`listening for Transfer...`)
@@ -74,7 +74,7 @@ export default function ReadERC20(props:Props){
 
   async function queryTokenBalance(window:any){
     const provider = new ethers.providers.Web3Provider(window.ethereum)
-    const erc20 = new ethers.Contract(addressContract, abi, provider);
+    const erc20:Contract = new ethers.Contract(addressContract, abi, provider);
 
     erc20.balanceOf(currentAccount)
     .then((result:string)=>{
