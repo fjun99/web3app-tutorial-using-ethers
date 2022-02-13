@@ -3,6 +3,8 @@ import {Button, Input , NumberInput,  NumberInputField,  FormControl,  FormLabel
 import {ethers} from 'ethers'
 import {parseEther } from 'ethers/lib/utils'
 import {ERC20ABI as abi} from 'abi/ERC20ABI'
+import { Contract } from "ethers"
+import { TransactionResponse,TransactionReceipt } from "@ethersproject/abstract-provider"
 
 interface Props {
     addressContract: string,
@@ -22,8 +24,15 @@ export default function ReadERC20(props:Props){
     if(!window.ethereum) return    
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
-    const erc20 = new ethers.Contract(addressContract, abi, signer)
-    erc20.transfer(toAddress,parseEther(amount)).catch((e:Error)=>console.log(e))  
+    const erc20:Contract = new ethers.Contract(addressContract, abi, signer)
+    
+    erc20.transfer(toAddress,parseEther(amount))
+      .then((tr: TransactionResponse) => {
+        console.log(`TX hash: ${tr.hash}`)
+        tr.wait().then((receipt:TransactionReceipt)=>{console.log("transfer receipt",receipt)})
+      })
+      .catch((e:Error)=>console.log(e))
+
   }
 
   const handleChange = (value:string) => setAmount(value)

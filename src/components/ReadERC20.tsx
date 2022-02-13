@@ -2,6 +2,7 @@ import React, {useEffect, useState } from 'react';
 import {Text} from '@chakra-ui/react'
 import {ERC20ABI as abi} from 'abi/ERC20ABI'
 import {ethers} from 'ethers'
+import { Contract } from "ethers"
 
 interface Props {
     addressContract: string,
@@ -21,7 +22,7 @@ export default function ReadERC20(props:Props){
     if(!window.ethereum) return
 
     const provider = new ethers.providers.Web3Provider(window.ethereum)
-    const erc20 = new ethers.Contract(addressContract, abi, provider);
+    const erc20:Contract = new ethers.Contract(addressContract, abi, provider);
 
     provider.getCode(addressContract).then((result:string)=>{
       //check whether it is a contract
