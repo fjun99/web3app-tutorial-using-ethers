@@ -1,4 +1,5 @@
-import React, {useEffect, useState } from 'react';
+// src/components/ReadERC20.tsx
+import React, {useEffect, useState } from 'react'
 import {Text} from '@chakra-ui/react'
 import {ERC20ABI as abi} from 'abi/ERC20ABI'
 import {ethers} from 'ethers'
@@ -9,7 +10,7 @@ interface Props {
     currentAccount: string | undefined
 }
 
-declare let window: any;
+declare let window: any
 
 export default function ReadERC20(props:Props){
   const addressContract = props.addressContract
